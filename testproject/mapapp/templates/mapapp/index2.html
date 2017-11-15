@@ -1,0 +1,72 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      html {
+        height: 100%;
+        width: 100%;
+	       margin: 0;
+      }
+      body {
+        height: 100%;
+        width: 100%;
+	       margin: 0;
+         background-image: url("{% static 'haikei.jpg' %}");
+      }
+      div#main{
+        height: 100%;
+        margin-left: 100px;
+        margin-right: 100px;
+      }
+      div#main > form{
+        position: relative;
+        top: 40%;
+        left: 10%;
+        font-size: xx-large;
+        font-family: "ＭＳ Ｐゴシック","ＭＳ ゴシック",sans-serif;
+  
+      }
+      /*#map {
+        height: 25%;
+        margin-left: 100px;
+        margin-right: 100px;
+        margin-bottom: 100px;
+      }*/
+      input[type="text"]{
+        width: 50%;
+        height: 50px;
+      }
+
+    </style>
+  </head>
+  <body link="blue" alink="navy" vlink="gray">
+
+      <div id="main">
+          <form action="./search-results/." method="POST">
+              {% csrf_token %}
+              {{ form }}
+              <input type="submit" value="検索" />
+            </form>
+      </div>
+
+        <!-- <div id="map"></div> -->
+
+        <script>
+          var map;
+          function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+              center: {lat: {{lat}}, lng: {{lng}}},
+              zoom: 13
+            });
+
+    	}
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDfTqBDOAgYhUiE28RjaduSce7cLyzXIRQ&callback=initMap"
+        async defer></script>
+  </body>
+</html>
