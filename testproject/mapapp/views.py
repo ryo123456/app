@@ -17,7 +17,8 @@ import re
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-
+import urllib
+from concurrent.futures import ThreadPoolExecutor,wait
 
 ENCODING = 'utf-8'
 @csrf_protect
@@ -240,26 +241,50 @@ def scraping(hurl,x):
 #		print (a.rstrip().lstrip())
 	return url
 
-
 def jtb(hotel,x):
-	url=[" "]*6
-	for i in range(x):
-		href=[""]
-		driver = webdriver.PhantomJS()
-		driver.get('http://www.jtb.co.jp/')
-		#print(driver.title)
-		driver.find_element_by_id('gsc-i-id1').send_keys("%s"%hotel[i+1])
-		driver.find_element_by_xpath('//*[@id="___gcse_0"]/div/form/table[1]/tbody/tr/td[2]/input').send_keys(Keys.ENTER)	
+	#url=[" "]*6
+	url = ["" for i in range(x+1)]
+	driver = webdriver.PhantomJS()
+	for i,hname in enumerate(hotel):
+		if i == 0:
+			continue
+		elif i > x:
+			break
+		#driver = webdriver.PhantomJS()
+		#text = "http://www.jtb.co.jp/search/?q=" + hname
+		driver.get('http://www.jtb.co.jp/search/?q=' + urllib.parse.quote_plus(hname, encoding='utf-8'))
+		#print(driver.page_source)
+		#href=[""]
+		#driver.find_element_by_id('gsc-i-id1').send_keys("%s"%hotel[i+1])
+		#driver.find_element_by_xpath('//*[@id="___gcse_0"]/div/form/table[1]/tbody/tr/td[2]/input').send_keys(Keys.ENTER)	
 		soup = BeautifulSoup(driver.page_source,"lxml")
-		for a in soup.find_all("a", class_="gs-title"):
-			try:
-				href.append(a['href'])
-			except KeyError:
-				pass
-		url[i] = href[1]
-		driver.service.process.send_signal(signal.SIGTERM)
-		driver.quit()
-	return url
-	
-def comparison():
-	print("hello")	
+		a = soup.find("a", class_="gs-title")
+		try:
+			#a = soup.find("a", class_="gs-title")
+			href = a['href']
+		except KeyError:
+			pass
+		#for a in soup.find_all("a", class_="gs-title"):
+		#	try:
+		#		href.append(a['href'])
+		#	except KeyError:
+		#		pass
+		#url[i] = href[1]
+		url[i] = href
+	driver.service.process.send_signal(signal.SIGTERM)
+	driver.quit()
+	return url	
+
+def js(hotel):
+	driver = webdriver.PhantomJS()
+	driver.get('http://www.jtb.co.jp/search/?q=' + urllib.parse.quote_plus(hname, encoding='utf-8'))
+	soup = BeautifulSoup(driver.page_source,"lxml")
+	a = soup.find("a", class_="gs-title")
+	try:
+		href = a['href']
+	except KeyError:
+		pass
+	url = href
+	driver.service.process.send_signal(signal.SIGTERM)
+	driver.quit()
+	print(url)
