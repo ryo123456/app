@@ -18,7 +18,8 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import urllib
-from concurrent.futures import ThreadPoolExecutor,wait
+from concurrent.futures import ThreadPoolExecutor,wait,as_completed
+import concurrent.futures
 
 ENCODING = 'utf-8'
 @csrf_protect
@@ -82,8 +83,6 @@ def test(request):
 						price2[i]=ss
 					except AttributeError:
 						pass
-					
-				
 				print(price2)
 				for i in range(x):
 					geo = geocode(hlocation[i + 1])
@@ -223,7 +222,6 @@ def scraping(hurl,x):
 		for link in soup.find_all("link", rel="canonical"):
 			purl=link['href']
 		url[i] = purl + "plan/"
-#	print(url)
 	r = requests.get(url[0])
 	content_type_encoding = r.encoding if r.encoding != 'ISO-8859-1' else None
 	soup = BeautifulSoup(r.content, 'html.parser', from_encoding=content_type_encoding)
@@ -242,42 +240,22 @@ def scraping(hurl,x):
 	return url
 
 def jtb(hotel,x):
-	#url=[" "]*6
-	url = ["" for i in range(x+1)]
-	driver = webdriver.PhantomJS()
-	for i,hname in enumerate(hotel):
+	pool = ThreadPoolExecutor(x)
+	url=[""]*5
+	h=[""]*5
+	for i,hotelname in enumerate(hotel):
 		if i == 0:
 			continue
 		elif i > x:
 			break
-		#driver = webdriver.PhantomJS()
-		#text = "http://www.jtb.co.jp/search/?q=" + hname
-		driver.get('http://www.jtb.co.jp/search/?q=' + urllib.parse.quote_plus(hname, encoding='utf-8'))
-		#print(driver.page_source)
-		#href=[""]
-		#driver.find_element_by_id('gsc-i-id1').send_keys("%s"%hotel[i+1])
-		#driver.find_element_by_xpath('//*[@id="___gcse_0"]/div/form/table[1]/tbody/tr/td[2]/input').send_keys(Keys.ENTER)	
-		soup = BeautifulSoup(driver.page_source,"lxml")
-		a = soup.find("a", class_="gs-title")
-		try:
-			#a = soup.find("a", class_="gs-title")
-			href = a['href']
-		except KeyError:
-			pass
-		#for a in soup.find_all("a", class_="gs-title"):
-		#	try:
-		#		href.append(a['href'])
-		#	except KeyError:
-		#		pass
-		#url[i] = href[1]
-		url[i] = href
-	driver.service.process.send_signal(signal.SIGTERM)
-	driver.quit()
+		h[i-1] = pool.submit(js,hotelname)
+	for i in range(x):
+		url[i] = h[i].result()
 	return url	
 
 def js(hotel):
 	driver = webdriver.PhantomJS()
-	driver.get('http://www.jtb.co.jp/search/?q=' + urllib.parse.quote_plus(hname, encoding='utf-8'))
+	driver.get('http://www.jtb.co.jp/search/?q=' + urllib.parse.quote_plus(hotel, encoding='utf-8'))
 	soup = BeautifulSoup(driver.page_source,"lxml")
 	a = soup.find("a", class_="gs-title")
 	try:
@@ -287,4 +265,4 @@ def js(hotel):
 	url = href
 	driver.service.process.send_signal(signal.SIGTERM)
 	driver.quit()
-	print(url)
+	return url
