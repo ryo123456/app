@@ -37,6 +37,7 @@ def form_test(request):
 
 @csrf_protect
 def test(request):
+	start = time.time()
 	index = "index.html"
 	html = 0
 	x = 0
@@ -49,6 +50,8 @@ def test(request):
 	purl = [" "]*10
 	lat2 = [1] * 10
 	lng2 = [1] * 10
+	
+	
 	if request.method == "POST":
 		form = MyForm(data=request.POST)
 
@@ -69,11 +72,13 @@ def test(request):
 				hlocation = result(html, 3)
 				htype = result(html,5)
 				if x==3:
-					purl = scraping(hurl,3)
-					price2 = jtb(hotel,3)
+					purl = parallel(hurl,3,scraping)
+					price2 = parallel(hotel,3,js_jtb)
+					#price3 = parallel(hotel,3,rakuten)
 				elif x>=5:
-					purl = scraping(hurl,5)
-					price2 = jtb(hotel,5)
+					purl = parallel(hurl,5,scraping)
+					price2 = parallel(hotel,5,js_jtb)
+					#price3 = parallel(hotel,5,rakuten)
 					x=5 
 				for i in range(x):
 					r = re.compile("([^,]*)(/)(.*)")
@@ -84,6 +89,7 @@ def test(request):
 					except AttributeError:
 						pass
 				print(price2)
+				#print(price3)
 				for i in range(x):
 					geo = geocode(hlocation[i + 1])
 					dom = xml.dom.minidom.parseString(geo)
@@ -96,6 +102,8 @@ def test(request):
 				else:
 					index = "index.html"
 
+		end = time.time()
+		print("\n" +"main"+ str(end-start) + "sec")
 	else:
 		form = MyForm()
 	if x == 3:
@@ -135,16 +143,19 @@ def test(request):
 		})
 
 def geocode(name):
+	start = time.time()
 	ENCODING = 'utf-8'
 	url = u"http://maps.google.com/maps/api/geocode/xml?&language=ja&sensor=false&region=ja&address="
 
 	url = url + urllib.parse.quote(name.encode(ENCODING))
 	
 	buffer = urllib.request.urlopen(url).read()
-
+	end = time.time()
+	print("\n" +"geocode "+ str(end-start) + "sec")
 	return buffer
 
 def jalan(lat,lng):
+	start = time.time()
 	lat = float(lat) * 1.000106961 - float(lat) * 0.000017467 - 0.004602017
 	lng = float(lng) * 1.000083049 + float(lng) * 0.000046047 - 0.010041046
 	lat = lat * 3600 * 1000
@@ -156,18 +167,14 @@ def jalan(lat,lng):
 	range = 10
 	url = url +  "?order=4&xml_ptn=1&pict_size=0&key=" + api_key + "&x=" + str(lng) +"&y=" + str(lat) + "&range=" + str(range)
 	html = urllib.request.urlopen(url).read()
-	
+	end = time.time()
+	print("\n" +"jalan "+ str(end-start) + "sec")
 	return html
 
 
 def result(html,x):
-	#f = open('mapapp/templates/mapapp/test.xml','w')
-	#f.write(html)
-	#f.close()
-	#tree=ET.parse('mapapp/templates/mapapp/test.xml')
-	#root=tree.getroot()
+	start = time.time()
 	root=ET.fromstring(html)
-	#a=root.findtext("HotelAddress")
 	i=4
 	hotel = ["A"]
 	for a in root:
@@ -175,11 +182,14 @@ def result(html,x):
 		if tag=="{jws}Hotel":
 			hotel.append(root[i][x].text)
 			i+=1
+	end = time.time()
+	print("\n" +"result "+ str(end-start) + "sec")
 	return hotel
 
 
 
 def count(html,x):
+	start = time.time()
 	root=ET.fromstring(html)
 	i=4
 	hotel = ["A"]
@@ -190,9 +200,12 @@ def count(html,x):
 			hotel.append(root[i][x].text)
 			i+=1
 			x+=1
+	end = time.time()
+	print("\n" +"count "+ str(end-start) + "sec")
 	return x
 
 def hprice(html):
+	start = time.time()
 	root=ET.fromstring(html)
 	i=4
 	price = [" "]
@@ -207,39 +220,27 @@ def hprice(html):
 				tag2 = root[i][x].tag
 			price.append(root[i][x].text)
 			i+=1
+	end = time.time()
+	print("\n" +"hprice "+ str(end-start) + "sec")
 	return price
 
-
-
-
-def scraping(hurl,x):
-	url=[" "]*6
-	for i in range (x):
-		r = requests.get('%s'%hurl[i+1])
-		content_type_encoding = r.encoding if r.encoding != 'ISO-8859-1' else None
-		soup = BeautifulSoup(r.content, 'html.parser', from_encoding=content_type_encoding)
-#		soup = BeautifulSoup(r.content,"lxml")
-		for link in soup.find_all("link", rel="canonical"):
-			purl=link['href']
-		url[i] = purl + "plan/"
-	r = requests.get(url[0])
+def scraping(hurl):
+	start = time.time()
+	r = requests.get('%s'%hurl)
 	content_type_encoding = r.encoding if r.encoding != 'ISO-8859-1' else None
 	soup = BeautifulSoup(r.content, 'html.parser', from_encoding=content_type_encoding)
-#	soup = BeautifulSoup(r.content,"lxml")
-	#for tbody in soup.find_all("td", class_="s12_66"):
-	#	a=tbody.text.split()
-        #        a=a[0].replace("\ufffd","")
-        #        a=a.replace("`","円")
-	#	print(a)
-#	for tbody in soup.find_all("h2", class_="wb-ba"):
-#		a=tbody.text
-		#a=tbody
-                #a=a[0].replace("\ufffd","")
-                #a=a.replace("`","円")
-#		print (a.rstrip().lstrip())
+	for link in soup.find_all("link", rel="canonical"):
+		purl=link['href']
+	url = purl + "plan/"
+	#r = requests.get(url)
+	#content_type_encoding = r.encoding if r.encoding != 'ISO-8859-1' else None
+	#soup = BeautifulSoup(r.content, 'html.parser', from_encoding=content_type_encoding)
+	end = time.time()
+	print("\n" +"scraping2 "+ str(end-start) + "sec")
 	return url
 
-def jtb(hotel,x):
+def parallel(hotel,x,js):
+	start = time.time()
 	pool = ThreadPoolExecutor(x)
 	url=[""]*5
 	h=[""]*5
@@ -251,13 +252,41 @@ def jtb(hotel,x):
 		h[i-1] = pool.submit(js,hotelname)
 	for i in range(x):
 		url[i] = h[i].result()
+	end = time.time()
+	print("\n" +"parallel "+ str(end-start) + "sec")
 	return url	
 
-def js(hotel):
+def js_jtb(hotel):
+	start = time.time()
 	driver = webdriver.PhantomJS()
 	driver.get('http://www.jtb.co.jp/search/?q=' + urllib.parse.quote_plus(hotel, encoding='utf-8'))
 	soup = BeautifulSoup(driver.page_source,"lxml")
 	a = soup.find("a", class_="gs-title")
+	try:
+		href = a['href']
+	except KeyError:
+		pass
+	url = href
+	driver.service.process.send_signal(signal.SIGTERM)
+	driver.quit()
+	end = time.time()
+	print("\n" +"js_jtb "+ str(end-start) + "sec")
+	return url
+
+def rakuten(hotel):
+	hurl = "https://kw.travel.rakuten.co.jp/keyword/Search.do?charset=utf-8&f_max=30&lid=topC_search_keyword&f_query=" + urllib.parse.quote_plus(hotel, encoding='utf-8')
+	r = requests.get('%s'%hurl)
+	soup = BeautifulSoup(r.content,"html.parser")
+	for div in soup.select('div > h2 > a'):
+		try:
+			purl=div['href']
+			print(purl)
+		except KeyError:
+			pass
+	driver = webdriver.PhantomJS()
+	driver.get(purl)
+	soup2 = BeautifulSoup(driver.page_source,"lxml")
+	a = soup.find("a", class_="rtconds")
 	try:
 		href = a['href']
 	except KeyError:
