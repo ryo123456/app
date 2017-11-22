@@ -74,11 +74,11 @@ def test(request):
 				if x==3:
 					purl = parallel(hurl,3,scraping)
 					price2 = parallel(hotel,3,js_jtb)
-					#price3 = parallel(hotel,3,rakuten)
+					price3 = parallel(hotel,3,rakuten)
 				elif x>=5:
 					purl = parallel(hurl,5,scraping)
 					price2 = parallel(hotel,5,js_jtb)
-					#price3 = parallel(hotel,5,rakuten)
+					price3 = parallel(hotel,5,rakuten)
 					x=5 
 				for i in range(x):
 					r = re.compile("([^,]*)(/)(.*)")
@@ -88,8 +88,8 @@ def test(request):
 						price2[i]=ss
 					except AttributeError:
 						pass
-				print(price2)
-				#print(price3)
+				#print(price2)
+				print(price3)
 				for i in range(x):
 					geo = geocode(hlocation[i + 1])
 					dom = xml.dom.minidom.parseString(geo)
@@ -266,6 +266,8 @@ def js_jtb(hotel):
 		href = a['href']
 	except KeyError:
 		pass
+	except TypeError:
+		pass
 	url = href
 	driver.service.process.send_signal(signal.SIGTERM)
 	driver.quit()
@@ -274,24 +276,34 @@ def js_jtb(hotel):
 	return url
 
 def rakuten(hotel):
+	start = time.time()
+	num=0
 	hurl = "https://kw.travel.rakuten.co.jp/keyword/Search.do?charset=utf-8&f_max=30&lid=topC_search_keyword&f_query=" + urllib.parse.quote_plus(hotel, encoding='utf-8')
 	r = requests.get('%s'%hurl)
 	soup = BeautifulSoup(r.content,"html.parser")
-	for div in soup.select('div > h2 > a'):
+	for div in soup.select('div > h2 > a'):	
 		try:
 			purl=div['href']
-			print(purl)
+			purl="https:" + purl
 		except KeyError:
 			pass
-	driver = webdriver.PhantomJS()
-	driver.get(purl)
-	soup2 = BeautifulSoup(driver.page_source,"lxml")
-	a = soup.find("a", class_="rtconds")
-	try:
-		href = a['href']
-	except KeyError:
-		pass
+		except TypeError:
+			pass
+		if 'purl' in locals():
+			break
+	r2 = requests.get('%s'%purl) 
+	soup2 = BeautifulSoup(r2.content,"lxml")
+	for a in soup2.find_all("a",class_="rtconds"):
+		try:
+			href = a['href']
+		except KeyError:
+			pass
+		except TypeError:
+			pass
+		if num == 1:
+			break
+		num+=1
 	url = href
-	driver.service.process.send_signal(signal.SIGTERM)
-	driver.quit()
+	end = time.time()
+	print("\n" +"rakuten "+ str(end-start) + "sec")
 	return url

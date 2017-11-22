@@ -1,12 +1,12 @@
-[INFO  - 2017-11-22T03:09:13.902Z] GhostDriver - Main - running on port 37778
-[INFO  - 2017-11-22T03:09:14.746Z] Session [85281340-cf32-11e7-bcd7-cb7c4562c782] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1","webSecurityEnabled":true}
-[INFO  - 2017-11-22T03:09:14.746Z] Session [85281340-cf32-11e7-bcd7-cb7c4562c782] - page.customHeaders:  - {}
-[INFO  - 2017-11-22T03:09:14.746Z] Session [85281340-cf32-11e7-bcd7-cb7c4562c782] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"2.1.1","driverName":"ghostdriver","driverVersion":"1.2.0","platform":"linux-unknown-64bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
-[INFO  - 2017-11-22T03:09:14.746Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: 85281340-cf32-11e7-bcd7-cb7c4562c782
-[ERROR - 2017-11-22T03:09:15.712Z] Session [85279e10-cf32-11e7-b84e-47ff1e716101] - page.onError - msg: ReferenceError: Can't find variable: _satellite
+[INFO  - 2017-11-22T06:38:09.437Z] GhostDriver - Main - running on port 41054
+[INFO  - 2017-11-22T06:38:10.282Z] Session [b4ea4ef0-cf4f-11e7-8e43-49e3f3af30eb] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1","webSecurityEnabled":true}
+[INFO  - 2017-11-22T06:38:10.283Z] Session [b4ea4ef0-cf4f-11e7-8e43-49e3f3af30eb] - page.customHeaders:  - {}
+[INFO  - 2017-11-22T06:38:10.283Z] Session [b4ea4ef0-cf4f-11e7-8e43-49e3f3af30eb] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"2.1.1","driverName":"ghostdriver","driverVersion":"1.2.0","platform":"linux-unknown-64bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
+[INFO  - 2017-11-22T06:38:10.283Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: b4ea4ef0-cf4f-11e7-8e43-49e3f3af30eb
+[ERROR - 2017-11-22T06:38:11.009Z] Session [b4e82c10-cf4f-11e7-b891-bfa7f1f26575] - page.onError - msg: ReferenceError: Can't find variable: _satellite
 
   phantomjs://platform/console++.js:263 in error
-[ERROR - 2017-11-22T03:09:15.713Z] Session [85279e10-cf32-11e7-b84e-47ff1e716101] - page.onError - stack:
-  global code (http://www.jtb.co.jp/search/?q=%E6%98%9F%E9%87%8E%E3%83%AA%E3%82%BE%E3%83%BC%E3%83%88%E3%80%80%E7%95%8C%E3%80%80%E5%87%BA%E9%9B%B2:374)
+[ERROR - 2017-11-22T06:38:11.009Z] Session [b4e82c10-cf4f-11e7-b891-bfa7f1f26575] - page.onError - stack:
+  global code (http://www.jtb.co.jp/search/?q=%EF%BC%A8%EF%BD%8F%EF%BD%94%EF%BD%85%EF%BD%8C%EF%BC%86%EF%BC%B3%EF%BD%90%EF%BD%81%E9%9D%92%E6%A3%AE%E3%82%BB%E3%83%B3%E3%82%BF%E3%83%BC%E3%83%9B%E3%83%86%E3%83%AB:374)
 
   phantomjs://platform/console++.js:263 in error
