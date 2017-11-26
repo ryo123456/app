@@ -21,6 +21,8 @@ import urllib
 from concurrent.futures import ThreadPoolExecutor,wait,as_completed
 import concurrent.futures
 
+ghotel = "helloworld"
+gcount = 0
 ENCODING = 'utf-8'
 @csrf_protect
 def form_test(request):
@@ -34,6 +36,20 @@ def form_test(request):
 
     })
 
+@csrf_protect
+def submain(request):
+	hotel = ghotel
+	x = gcount  
+	if x == 3:
+		hotel.append("a")
+		hotel.append("a")
+		return render(request, 'mapapp/index4.html', {
+			'a1': [hotel[1],hotel[2],hotel[3],hotel[4],hotel[5]]
+		})
+	else:
+		return render(request, 'mapapp/index4.html', {
+			'a1': [hotel[1],hotel[2],hotel[3],hotel[4],hotel[5]]
+		})
 
 @csrf_protect
 def test(request):
@@ -50,7 +66,8 @@ def test(request):
 	purl = [" "]*10
 	lat2 = [1] * 10
 	lng2 = [1] * 10
-	
+	global ghotel
+	global gcount
 	
 	if request.method == "POST":
 		form = MyForm(data=request.POST)
@@ -65,7 +82,9 @@ def test(request):
 				lng = location[0].getElementsByTagName('lng')[0].firstChild.data
 				html = jalan(lat, lng)
 				hotel = result(html, 1)
+				ghotel = hotel
 				x = count(html, 1)
+				gcount = x
 				hurl = result(html, 6)
 				price = hprice(html)
 				image = result(html, 9)
