@@ -23,6 +23,10 @@ import concurrent.futures
 
 ghotel = "helloworld"
 gcount = 0
+gimage = 0
+JTB_price = ""
+RAKUTEN_price = ""
+JALAN = ""
 ENCODING = 'utf-8'
 @csrf_protect
 def form_test(request):
@@ -40,15 +44,24 @@ def form_test(request):
 def submain(request):
 	hotel = ghotel
 	x = gcount  
+	jtb = JTB_price
+	rakuten = RAKUTEN_price
+	jalan = JALAN
 	if x == 3:
 		hotel.append("a")
 		hotel.append("a")
-		return render(request, 'mapapp/index4.html', {
-			'a1': [hotel[1],hotel[2],hotel[3],hotel[4],hotel[5]]
+		return render(request, 'mapapp/index5.html', {
+			'a1': [hotel[1],hotel[2],hotel[3]],
+			'a2': [jalan[0],jalan[1],jalan[2]],
+			'a3': [jtb[0],jtb[1],jtb[2]],
+			'a4': [rakuten[0],rakuten[1],rakuten[2]]	
 		})
 	else:
 		return render(request, 'mapapp/index4.html', {
-			'a1': [hotel[1],hotel[2],hotel[3],hotel[4],hotel[5]]
+			'a1': [hotel[1],hotel[2],hotel[3],hotel[4],hotel[5]],
+			'a2': [jalan[0],jalan[1],jalan[2],jalan[3],jalan[4]],
+			'a3': [jtb[0],jtb[1],jtb[2],jtb[3],jtb[4]],
+			'a4': [rakuten[0],rakuten[1],rakuten[2],rakuten[3],rakuten[4]]	
 		})
 
 @csrf_protect
@@ -68,6 +81,9 @@ def test(request):
 	lng2 = [1] * 10
 	global ghotel
 	global gcount
+	global JTB_price 
+	global RAKUTEN_price 
+	global JALAN
 	
 	if request.method == "POST":
 		form = MyForm(data=request.POST)
@@ -94,10 +110,16 @@ def test(request):
 					purl = parallel(hurl,3,scraping)
 					price2 = parallel(hotel,3,js_jtb)
 					price3 = parallel(hotel,3,rakuten)
+					JTB_price = price2
+					RAKUTEN_price = price3
+					JALAN = purl
 				elif x>=5:
 					purl = parallel(hurl,5,scraping)
 					price2 = parallel(hotel,5,js_jtb)
 					price3 = parallel(hotel,5,rakuten)
+					JTB_price = price2
+					RAKUTEN_price = price3
+					JALAN = purl
 					x=5 
 				for i in range(x):
 					r = re.compile("([^,]*)(/)(.*)")
@@ -310,19 +332,22 @@ def rakuten(hotel):
 			pass
 		if 'purl' in locals():
 			break
-	r2 = requests.get('%s'%purl) 
-	soup2 = BeautifulSoup(r2.content,"lxml")
-	for a in soup2.find_all("a",class_="rtconds"):
-		try:
-			href = a['href']
-		except KeyError:
-			pass
-		except TypeError:
-			pass
-		if num == 1:
-			break
-		num+=1
-	url = href
+	try:
+		r2 = requests.get('%s'%purl) 
+		soup2 = BeautifulSoup(r2.content,"lxml")
+		for a in soup2.find_all("a",class_="rtconds"):
+			try:
+				href = a['href']
+			except KeyError:
+				pass
+			except TypeError:
+				pass
+			if num == 1:
+				break
+			num+=1
+		url = href
+	except UnboundLocalError:
+		url = 1
 	end = time.time()
 	print("\n" +"rakuten "+ str(end-start) + "sec")
 	return url

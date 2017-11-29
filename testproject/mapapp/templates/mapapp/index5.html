@@ -1,0 +1,35 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      #header {
+        height: 100px;
+      }
+      #footer {
+        height: 100px;
+      }
+      form{
+        position: relative;
+        top: 50%;
+      }
+    </style>
+  </head>
+  <body link="blue" alink="navy" vlink="gray">
+  <header id="header" >
+  </header>
+              <table border="1" width="800" height="200" class="table table-striped">
+                <tr><th>ホテル名</th><th>じゃらん</th><th>JTB</th><th>楽天</th></tr>
+                <tr><td>{{a1.0}}</td><td><a href="{{a2.0}}">料金一覧</a></td><td><a href="{{a3.0}}">料金一覧</a></td><td><a href="{{a4.0}}">料金一覧</a></td></tr>
+                <tr><td>{{a1.1}}</td><td><a href="{{a2.1}}">料金一覧</a></td><td><a href="{{a3.1}}">料金一覧</a></td><td><a href="{{a4.1}}">料金一覧</a></td></tr>
+                <tr><td>{{a1.2}}</td><td><a href="{{a2.2}}">料金一覧</a></td><td><a href="{{a3.2}}">料金一覧</a></td><td><a href="{{a4.2}}">料金一覧</a></td></tr>
+              </table>
+  </div>
+  <footer id="footer">
+  </footer>
+  </body>
+</html>
