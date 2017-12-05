@@ -24,10 +24,31 @@
   </header>
               <table border="1" width="800" height="200" class="table table-striped">
                 <tr><th>ホテル名</th><th>じゃらん</th><th>JTB</th><th>楽天</th></tr>
-                <tr><td>{{a1.0}}</td><td><a href="{{a2.0}}">料金一覧</a></td><td><a href="{{a3.0}}">料金一覧</a></td><td><a href="{{a4.0}}">料金一覧</a></td></tr>
-                <tr><td>{{a1.1}}</td><td><a href="{{a2.1}}">料金一覧</a></td><td><a href="{{a3.1}}">料金一覧</a></td><td><a href="{{a4.1}}">料金一覧</a></td></tr>
-                <tr><td>{{a1.2}}</td><td><a href="{{a2.2}}">料金一覧</a></td><td><a href="{{a3.2}}">料金一覧</a></td><td><a href="{{a4.2}}">料金一覧</a></td></tr>
+                <tr><td>{{a1.0}}</td><td id ="20"><a href="{{a2.0}}">料金一覧</a></td><td id ="30"><a href="{{a3.0}}">料金一覧</a></td><td id ="40"><a href="{{a4.0}}">料金一覧</a></td></tr>
+                <tr><td>{{a1.1}}</td><td id ="21"><a href="{{a2.1}}">料金一覧</a></td><td id ="31"><a href="{{a3.1}}">料金一覧</a></td><td id ="41"><a href="{{a4.1}}">料金一覧</a></td></tr>
+                <tr><td>{{a1.2}}</td><td id="22"><a href="{{a2.2}}">料金一覧</a></td><td id="32"><a href="{{a3.2}}">料金一覧</a></td><td id ="42"><a href="{{a4.2}}">料金一覧</a></td></tr>
               </table>
+  <script>
+        var a;
+        var b;
+        var c;
+	for (var x =2; x<5; x++){
+		for (var y =0; y<3; y++){
+			w = x.toString(10)+y.toString(10);
+			z = "a"+x+"."+y;
+			(x==2 &&y==0)?b="{{a2.0}}":(x==2 &&y==1)?b="{{a2.1}}":(x==2 && y==2)?b="{{a2.2}}":(x==3 &&y==0)?b="{{a3.0}}":(x==3 &&y==1)?b="{{a3.1}}":(x==3 && y==2)?b="{{a3.2}}":(x==4 &&y==0)?b="{{a4.0}}":(x==4 &&y==1)?b="{{a4.1}}":b="{{a4.2}}";
+			c = new String(b);
+			a = document.getElementById(w);
+        		if (b!=="1"){
+        			a.innerHTML ="<a href="+b+">料金一覧<"+"/a>";
+        		}
+        		else {
+        			a.innerHTML = "検索対象なし";
+        		}
+		}
+	}
+ </script>
+
   </div>
   <footer id="footer">
   </footer>
