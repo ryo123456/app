@@ -36,13 +36,13 @@
         var c;
 	for (var x =2; x<5; x++){
 		for (var y =0; y<5; y++){
-			w = x.toString(10)+y.toString(10)
-			z = "a"+x+"."+y
+			w = x.toString(10)+y.toString(10);
+			z = "a"+x+"."+y;
+			(x==2 &&y==0)?b="{{a2.0}}":(x==2 &&y==1)?b="{{a2.1}}":(x==2 && y==2)?b="{{a2.2}}":(x==2 &&y==3)?b="{{a2.3}}":(x==2 &&y==4)?b="{{a2.4}}":(x==3 &&y==0)?b="{{a3.0}}":(x==3 &&y==1)?b="{{a3.1}}":(x==3 && y==2)?b="{{a3.2}}":(x==3 &&y==3)?b="{{a3.3}}":(x==3 &&y==4)?b="{{a3.4}}":(x==4 &&y==0)?b="{{a4.0}}":(x==4 &&y==1)?b="{{a4.1}}":(x==4 && y==2)?b="{{a4.2}}":(x==4 &&y==3)?b="{{a4.3}}":b="{{a4.4}}";
+			c = new String(b);
 			a = document.getElementById(w);
-        		b = "{"+"{"+z+"}"+"}"
-        		c = new String(b);
-        		if (b ===c) {
-        			a.innerHTML ="<a href={{z}}>料金一覧<"+"/a>";
+        		if (b!=="1"){
+        			a.innerHTML ="<a href="+b+">料金一覧<"+"/a>";
         		}
         		else {
         			a.innerHTML = "検索対象なし";

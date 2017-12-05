@@ -130,7 +130,7 @@ def test(request):
 					except AttributeError:
 						pass
 				#print(price2)
-				print(price3)
+				#print(price3)
 				for i in range(x):
 					geo = geocode(hlocation[i + 1])
 					dom = xml.dom.minidom.parseString(geo)
