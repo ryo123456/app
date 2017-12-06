@@ -325,11 +325,12 @@ def js_jtb(hotel):
 	a = soup.find("a", class_="gs-title")
 	try:
 		href = a['href']
+		url = href
 	except KeyError:
-		pass
+		url = 1
 	except TypeError:
-		pass
-	url = href
+		url = 1
+	#url = href
 	driver.service.process.send_signal(signal.SIGTERM)
 	driver.quit()
 	end = time.time()
@@ -373,18 +374,24 @@ def rakuten(hotel):
 	return url
 
 def jtbscraping(hurl):
+	start = time.time()
 	jtb_price = 0
 	start = time.time()
-	driver = webdriver.PhantomJS()
-	driver.get(hurl)
-	soup = BeautifulSoup(driver.page_source,"lxml")
-	for div in soup.select('div#one-price-area > dl > dd > span'):
-		jtb_price = div.text
-	driver.quit()
+	if hurl !=1:
+		driver = webdriver.PhantomJS()
+		driver.get(hurl)
+		soup = BeautifulSoup(driver.page_source,"lxml")
+		for div in soup.select('div#one-price-area > dl > dd > span'):
+			jtb_price = div.text
+		driver.quit()
+	else:
+		jtb_price = "存在しない"
 	end = time.time()
+	print("\n" +"jtbscraping"+ str(end-start) + "sec")
 	return jtb_price
-#def rscraping(hurl):
+
 def jaranscraping(hurl):
+	start = time.time()
 	jaran_price = [0,1000000000000]
 	r = requests.get('%s'%hurl)
 	soup = BeautifulSoup(r.content,"html.parser")
@@ -402,6 +409,8 @@ def jaranscraping(hurl):
 				jaran_price[1] = te
 		except:
 			pass
+	end = time.time()
+	print("\n" +"jaranscraping"+ str(end-start) + "sec")
 	return jaran_price
 
 
