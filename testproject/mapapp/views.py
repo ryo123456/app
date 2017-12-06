@@ -24,9 +24,12 @@ import concurrent.futures
 ghotel = "helloworld"
 gcount = 0
 gimage = 0
-JTB_price = ""
-RAKUTEN_price = ""
-JALAN = ""
+JTB_url = ""
+RAKUTEN_url = ""
+JALAN_url= ""
+jtb_price=""
+rakuten_price=""
+jalan_price=""
 ENCODING = 'utf-8'
 @csrf_protect
 def form_test(request):
@@ -44,24 +47,33 @@ def form_test(request):
 def submain(request):
 	hotel = ghotel
 	x = gcount  
-	jtb = JTB_price
-	rakuten = RAKUTEN_price
-	jalan = JALAN
+	jtb = JTB_url
+	rakuten = RAKUTEN_url
+	jalan = JALAN_url
+	pjalan = jalan_price
+	pjtb = jtb_price
+	prakuten = rakuten_price
+	print(pjalan)
+	print(pjtb)
+#	for i,jtb2 in enumerate(pjtb):
+#		if i == 0:
+#                        continue
+#		jtb_price[i] = str(jtb2).split("～")
 	if x == 3:
 		hotel.append("a")
 		hotel.append("a")
 		return render(request, 'mapapp/index5.html', {
 			'a1': [hotel[1],hotel[2],hotel[3]],
-			'a2': [jalan[0],jalan[1],jalan[2]],
-			'a3': [jtb[0],jtb[1],jtb[2]],
-			'a4': [rakuten[0],rakuten[1],rakuten[2]]	
+			'a2': [jalan[1],jalan[2],jalan[3]],
+			'a3': [jtb[1],jtb[2],jtb[3]],
+			'a4': [rakuten[1],rakuten[2],rakuten[3]]	
 		})
 	else:
 		return render(request, 'mapapp/index4.html', {
 			'a1': [hotel[1],hotel[2],hotel[3],hotel[4],hotel[5]],
-			'a2': [jalan[0],jalan[1],jalan[2],jalan[3],jalan[4]],
-			'a3': [jtb[0],jtb[1],jtb[2],jtb[3],jtb[4]],
-			'a4': [rakuten[0],rakuten[1],rakuten[2],rakuten[3],rakuten[4]]	
+			'a2': [jalan[1],jalan[2],jalan[3],jalan[4],jalan[5]],
+			'a3': [jtb[1],jtb[2],jtb[3],jtb[4],jtb[5]],
+			'a4': [rakuten[1],rakuten[2],rakuten[3],rakuten[4],rakuten[5]]	
 		})
 
 @csrf_protect
@@ -81,10 +93,13 @@ def test(request):
 	lng2 = [1] * 10
 	global ghotel
 	global gcount
-	global JTB_price 
-	global RAKUTEN_price 
-	global JALAN
-	
+	global JTB_url
+	global RAKUTEN_url
+	global JALAN_url
+	global jalan_price
+	global jtb_price
+	global rakuten_price	
+
 	if request.method == "POST":
 		form = MyForm(data=request.POST)
 
@@ -100,7 +115,6 @@ def test(request):
 				hotel = result(html, 1)
 				ghotel = hotel
 				x = count(html, 1)
-				gcount = x
 				hurl = result(html, 6)
 				price = hprice(html)
 				image = result(html, 9)
@@ -110,16 +124,21 @@ def test(request):
 					purl = parallel(hurl,3,scraping)
 					price2 = parallel(hotel,3,js_jtb)
 					price3 = parallel(hotel,3,rakuten)
-					JTB_price = price2
-					RAKUTEN_price = price3
-					JALAN = purl
+					JTB_url = price2
+					RAKUTEN_url = price3
+					JALAN_url = purl
+					jtb_price = parallel(price2,3,jtbscraping)
+					jalan_price = parallel(purl,3,jaranscraping)
 				elif x>=5:
 					purl = parallel(hurl,5,scraping)
 					price2 = parallel(hotel,5,js_jtb)
 					price3 = parallel(hotel,5,rakuten)
-					JTB_price = price2
-					RAKUTEN_price = price3
-					JALAN = purl
+					JTB_url = price2
+					RAKUTEN_url = price3
+					JALAN_url = purl
+					print(JALAN_url)
+					jtb_price = parallel(price2,5,jtbscraping)
+					jalan_price = parallel(purl,5,jaranscraping)
 					x=5 
 				for i in range(x):
 					r = re.compile("([^,]*)(/)(.*)")
@@ -129,6 +148,7 @@ def test(request):
 						price2[i]=ss
 					except AttributeError:
 						pass
+				gcount = x
 				#print(price2)
 				#print(price3)
 				for i in range(x):
@@ -161,7 +181,7 @@ def test(request):
 			'd1': [price[1],price[2],price[3]],
 			'e1': [hlocation[1],hlocation[2],hlocation[3]],
 			'f1': [htype[1],htype[2],htype[3]],
-			'purl': [purl[0],purl[1],purl[2]]
+			'purl': [purl[1],purl[2],purl[3]]
 
 		})
 	else:
@@ -178,7 +198,7 @@ def test(request):
 			'd1': [price[1],price[2],price[3],price[4],price[5]],
 			'e1': [hlocation[1],hlocation[2],hlocation[3],hlocation[4],hlocation[5]],
                         'f1': [htype[1],htype[2],htype[3],htype[4],htype[5]],
-			'purl': [purl[0],purl[1],purl[2],purl[3],purl[4]]
+			'purl': [purl[1],purl[2],purl[3],purl[4],purl[5]]
 		
 
 		})
@@ -283,8 +303,8 @@ def scraping(hurl):
 def parallel(hotel,x,js):
 	start = time.time()
 	pool = ThreadPoolExecutor(x)
-	url=[""]*5
-	h=[""]*5
+	url=[""]*7
+	h=[""]*7
 	for i,hotelname in enumerate(hotel):
 		if i == 0:
 			continue
@@ -292,7 +312,7 @@ def parallel(hotel,x,js):
 			break
 		h[i-1] = pool.submit(js,hotelname)
 	for i in range(x):
-		url[i] = h[i].result()
+		url[i+1] = h[i].result()
 	end = time.time()
 	print("\n" +"parallel "+ str(end-start) + "sec")
 	return url	
@@ -351,3 +371,40 @@ def rakuten(hotel):
 	end = time.time()
 	print("\n" +"rakuten "+ str(end-start) + "sec")
 	return url
+
+def jtbscraping(hurl):
+	jtb_price = 0
+	start = time.time()
+	driver = webdriver.PhantomJS()
+	driver.get(hurl)
+	soup = BeautifulSoup(driver.page_source,"lxml")
+	for div in soup.select('div#one-price-area > dl > dd > span'):
+		jtb_price = div.text
+	driver.quit()
+	end = time.time()
+	return jtb_price
+#def rscraping(hurl):
+def jaranscraping(hurl):
+	jaran_price = [0,1000000000000]
+	r = requests.get('%s'%hurl)
+	soup = BeautifulSoup(r.content,"html.parser")
+	for div in soup.select('td.s12_66'):
+		te= div.text.strip()
+		te = te.replace("￥","")
+		te = list(te)
+		te.pop()
+		te = ''.join(te)
+		try:	
+			te = int(te.replace(",",""))
+			if te > jaran_price[0] :
+				jaran_price[0] = te
+			if te < jaran_price[1] :
+				jaran_price[1] = te
+		except:
+			pass
+	return jaran_price
+
+
+def rakuscraping(url):
+	print("test")	
+

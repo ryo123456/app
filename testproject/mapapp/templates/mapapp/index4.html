@@ -24,11 +24,11 @@
   </header>
               <table border="1" width="800" height="200" class="table table-striped">
               	<tr><th>ホテル名</th><th>じゃらん</th><th>JTB</th><th>楽天</th></tr>
-		<tr><td>{{a1.0}}</td><td id ="20"><a href="{{a2.0}}">料金一覧</a></td><td id ="30"><a href="{{a3.0}}">料金一覧</a></td><td id ="40"><a href="{{a4.0}}">料金一覧</a></td></tr>
-                <tr><td>{{a1.1}}</td><td id ="21"><a href="{{a2.1}}">料金一覧</a></td><td id ="31"><a href="{{a3.1}}">料金一覧</a></td><td id ="41"><a href="{{a4.1}}">料金一覧</a></td></tr>
-                <tr><td>{{a1.2}}</td><td id ="22"><a href="{{a2.2}}">料金一覧</a></td><td id ="32"><a href="{{a3.2}}">料金一覧</a></td><td id="42">ka</td></tr>
-              	<tr><td>{{a1.3}}</td><td id ="23"><a href="{{a2.3}}">料金一覧</a></td><td id="33"><a href="{{a3.3}}">料金一覧</a></td><td id="43"><a href="{{a4.3}}">料金一覧</a></td></tr>
-              	<tr><td>{{a1.4}}</td><td id ="24"><a href="{{a2.4}}">料金一覧</a></td><td id ="34"><a href="{{a3.4}}">料金一覧</a></td><td id ="44"><a href="{{a4.4}}">料金一覧</a></td></tr>
+		<tr><td>{{a1.0}}</td><td id ="20">k</td><td id ="30">k</td><td id ="40">k</td></tr>
+                <tr><td>{{a1.1}}</td><td id ="21">k</td><td id ="31">l</td><td id ="41">l</td></tr>
+                <tr><td>{{a1.2}}</td><td id ="22">a</td><td id ="32">a</td><td id="42">k</td></tr>
+              	<tr><td>{{a1.3}}</td><td id ="23">d</td><td id ="33">d</td><td id="43">d</td></tr>
+              	<tr><td>{{a1.4}}</td><td id ="24">a</td><td id ="34">e</td><td id ="44">e</td></tr>
               </table>
   <script>
         var a;
@@ -42,7 +42,7 @@
 			c = new String(b);
 			a = document.getElementById(w);
         		if (b!=="1"){
-        			a.innerHTML ="<a href="+b+">料金一覧<"+"/a>";
+        			a.innerHTML ="最高値 最安値<br><a href="+b+">料金一覧<"+"/a>";
         		}
         		else {
         			a.innerHTML = "検索対象なし";

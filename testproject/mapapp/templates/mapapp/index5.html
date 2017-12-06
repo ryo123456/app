@@ -24,9 +24,9 @@
   </header>
               <table border="1" width="800" height="200" class="table table-striped">
                 <tr><th>ホテル名</th><th>じゃらん</th><th>JTB</th><th>楽天</th></tr>
-                <tr><td>{{a1.0}}</td><td id ="20"><a href="{{a2.0}}">料金一覧</a></td><td id ="30"><a href="{{a3.0}}">料金一覧</a></td><td id ="40"><a href="{{a4.0}}">料金一覧</a></td></tr>
-                <tr><td>{{a1.1}}</td><td id ="21"><a href="{{a2.1}}">料金一覧</a></td><td id ="31"><a href="{{a3.1}}">料金一覧</a></td><td id ="41"><a href="{{a4.1}}">料金一覧</a></td></tr>
-                <tr><td>{{a1.2}}</td><td id="22"><a href="{{a2.2}}">料金一覧</a></td><td id="32"><a href="{{a3.2}}">料金一覧</a></td><td id ="42"><a href="{{a4.2}}">料金一覧</a></td></tr>
+                <tr><td>{{a1.0}}</td><td id ="20">a</td><td id ="30">a</td><td id ="40">a</td></tr>
+                <tr><td>{{a1.1}}</td><td id ="21">a</td><td id ="31">a</td><td id ="41">a</td></tr>
+                <tr><td>{{a1.2}}</td><td id="22">a</td><td id="32">a</td><td id ="42">a</td></tr>
               </table>
   <script>
         var a;
@@ -40,7 +40,7 @@
 			c = new String(b);
 			a = document.getElementById(w);
         		if (b!=="1"){
-        			a.innerHTML ="<a href="+b+">料金一覧<"+"/a>";
+        			a.innerHTML ="最高値 最安値<br><a href="+b+">料金一覧<"+"/a>";
         		}
         		else {
         			a.innerHTML = "検索対象なし";
