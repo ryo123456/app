@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 from django.shortcuts import render
 from django.http import HttpResponse
 from .forms import MyForm
@@ -14,12 +13,13 @@ import lxml.html
 import time
 import signal
 import re
+import os
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import urllib
 from concurrent.futures import ThreadPoolExecutor,wait,as_completed
-import concurrent.futures
+import concurrent.futures as confu
 
 ghotel = "helloworld"
 gcount = 0
@@ -27,9 +27,9 @@ gimage = 0
 JTB_url = ""
 RAKUTEN_url = ""
 JALAN_url= ""
-jtb_price=""
+jtb_price=[""]*10
 rakuten_price=""
-jalan_price=""
+jalan_price=[""]*10
 ENCODING = 'utf-8'
 @csrf_protect
 def form_test(request):
@@ -53,27 +53,52 @@ def submain(request):
 	pjalan = jalan_price
 	pjtb = jtb_price
 	prakuten = rakuten_price
+	for i,jalan2 in enumerate(pjalan):
+		if i==0:
+			continue
+		elif i > x:
+			break
+		pjalan[i][0] = str(pjalan[i][0]) + "円"
+		pjalan[i][1] = str(pjalan[i][1]) + "円"
+		
+	for i,jtb2 in enumerate(pjtb):
+		if i == 0:
+			continue
+		elif i > x:
+			break
+		jtb_price[i] = str(jtb2).split("～")
+	
+	for i,rakuten2 in enumerate(prakuten):
+                if i==0:
+                        continue
+                elif i > x:
+                        break
+                prakuten[i][0] = str(prakuten[i][0]) + "円"
+                prakuten[i][1] = str(prakuten[i][1]) + "円"	
+
 	print(pjalan)
 	print(pjtb)
-#	for i,jtb2 in enumerate(pjtb):
-#		if i == 0:
-#                        continue
-#		jtb_price[i] = str(jtb2).split("～")
+	print(prakuten)
 	if x == 3:
-		hotel.append("a")
-		hotel.append("a")
 		return render(request, 'mapapp/index5.html', {
 			'a1': [hotel[1],hotel[2],hotel[3]],
 			'a2': [jalan[1],jalan[2],jalan[3]],
 			'a3': [jtb[1],jtb[2],jtb[3]],
-			'a4': [rakuten[1],rakuten[2],rakuten[3]]	
+			'a4': [rakuten[1],rakuten[2],rakuten[3]],
+			'a5': [pjalan[1][0],pjalan[1][1],pjalan[2][0],pjalan[2][1],pjalan[3][0],pjalan[3][1]],
+			'a6': [pjtb[1][0],pjtb[1][1],pjtb[2][0],pjtb[2][1],pjtb[3][0],pjtb[3][1]],	
+			'a7': [prakuten[1][0],prakuten[1][1],prakuten[2][0],prakuten[2][1],prakuten[3][0],prakuten[3][1]]
+				
 		})
 	else:
 		return render(request, 'mapapp/index4.html', {
 			'a1': [hotel[1],hotel[2],hotel[3],hotel[4],hotel[5]],
 			'a2': [jalan[1],jalan[2],jalan[3],jalan[4],jalan[5]],
 			'a3': [jtb[1],jtb[2],jtb[3],jtb[4],jtb[5]],
-			'a4': [rakuten[1],rakuten[2],rakuten[3],rakuten[4],rakuten[5]]	
+			'a4': [rakuten[1],rakuten[2],rakuten[3],rakuten[4],rakuten[5]],
+			'a5': [pjalan[1][0],pjalan[1][1],pjalan[2][0],pjalan[2][1],pjalan[3][0],pjalan[3][1],pjalan[4][0],pjalan[4][1],pjalan[5][0],pjalan[5][1]],
+			'a6': [pjtb[1][0],pjtb[1][1],pjtb[2][0],pjtb[2][1],pjtb[3][0],pjtb[3][1],pjtb[4][0],pjtb[4][1],pjtb[5][0],pjtb[5][1]],	
+			'a7': [prakuten[1][0],prakuten[1][1],prakuten[2][0],prakuten[2][1],prakuten[3][0],prakuten[3][1],prakuten[4][0],prakuten[4][1],prakuten[5][0],prakuten[5][1]]
 		})
 
 @csrf_protect
@@ -128,7 +153,9 @@ def test(request):
 					RAKUTEN_url = price3
 					JALAN_url = purl
 					jtb_price = parallel(price2,3,jtbscraping)
-					jalan_price = parallel(purl,3,jaranscraping)
+					jalan_price = parallel(purl,3,jalanscraping)
+					#parallel2(purl,price2,3)
+					rakuten_price = parallel(price3,3,rscraping)
 				elif x>=5:
 					purl = parallel(hurl,5,scraping)
 					price2 = parallel(hotel,5,js_jtb)
@@ -137,8 +164,10 @@ def test(request):
 					RAKUTEN_url = price3
 					JALAN_url = purl
 					print(JALAN_url)
-					jtb_price = parallel(price2,5,jtbscraping)
-					jalan_price = parallel(purl,5,jaranscraping)
+					parallel2(purl,price2,5)
+					#jtb_price = parallel(price2,5,jtbscraping)
+					#jalan_price = parallel(purl,5,jalanscraping)
+					rakuten_price = parallel(price3,5,rscraping)
 					x=5 
 				for i in range(x):
 					r = re.compile("([^,]*)(/)(.*)")
@@ -325,12 +354,14 @@ def js_jtb(hotel):
 	a = soup.find("a", class_="gs-title")
 	try:
 		href = a['href']
-		url = href
 	except KeyError:
-		url = 1
+		pass
 	except TypeError:
+		pass
+	if 'purl' in locals():
 		url = 1
-	#url = href
+	else:
+		url = href
 	driver.service.process.send_signal(signal.SIGTERM)
 	driver.quit()
 	end = time.time()
@@ -390,7 +421,7 @@ def jtbscraping(hurl):
 	print("\n" +"jtbscraping"+ str(end-start) + "sec")
 	return jtb_price
 
-def jaranscraping(hurl):
+def jalanscraping(hurl):
 	start = time.time()
 	jaran_price = [0,1000000000000]
 	r = requests.get('%s'%hurl)
@@ -413,7 +444,60 @@ def jaranscraping(hurl):
 	print("\n" +"jaranscraping"+ str(end-start) + "sec")
 	return jaran_price
 
+def rscraping(url):
+	start = time.time()
+	hello = [10000000,0]
+	url = "https:" + url
+	r = requests.get('%s'%url)
+	soup = BeautifulSoup(r.content,"html.parser")
+	for b in soup.select('li[data-locate="roomType-chargeByPerson-1"]'):
+		rprice = b.find('strong')
+		#print(rprice.text)
+		try:
+			rakuten_price2 = rprice.text.replace(",","").split("~")
+			rakuten_price2[1] = rakuten_price2[1].replace("円/人","")
+			rakuten_price2 = list(map(int,rakuten_price2))
+			if hello[0] > rakuten_price2[0]:
+				hello[0] = rakuten_price2[0]
+			if hello[1] < rakuten_price2[1]:
+				hello[1] = rakuten_price2[1]	
+		except:
+			a = rprice.text.replace("円/人","").replace(",","")
+			rakuten_price2 = [a,a]
+			rakuten_price2 = list(map(int,rakuten_price2))
+			if hello[0] > rakuten_price2[0]:
+				hello[0] = rakuten_price2[0]
+			if hello[1] < rakuten_price2[1]:
+				hello[1] = rakuten_price2[1]
+	end = time.time()
+	print("\n" +"rscraping "+ str(end-start) + "sec")
+	return hello
 
-def rakuscraping(url):
-	print("test")	
 
+def parallel2(purl,price2,x):
+	global jalan_price
+	global jtb_price
+	start = time.time()
+	pool = ThreadPoolExecutor(x)
+	pool2 = ThreadPoolExecutor(x)
+	h=[""]*7
+	y=[""]*7
+	for i in range(1,x+1):
+		h[i-1] = pool.submit(jalanscraping,purl[i])
+		y[i-1] = pool2.submit(jtbscraping,price2[i])
+	for i in range(x):
+		h[i] = h[i].result()
+		y[i] = y[i].result()
+		jalan_price[i+1] = h[i]
+		jtb_price[i+1] = y[i]
+#	with confu.ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
+#		futures = [executor.submit(jalanscraping, purl[i]) for i in range(1,x+1)]
+#		futures2 = [executor.submit(jtbscraping, price2[i]) for i in range(1,x+1)]
+#		(done, notdone) = confu.wait(futures)
+#		(done, notdone) = confu.wait(futures2)
+#		for i,future in enumerate(futures):
+#			jalan_price[i+1]=future.result()
+#		for i,future2 in enumerate(futures2):
+#			jtb_price[i+1]=future2.result()
+	end = time.time()
+	print("\n" +"parallel2"+ str(end-start) + "sec")
