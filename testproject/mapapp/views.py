@@ -190,6 +190,29 @@ def test(request):
 				gcount = x
 				#print(price2)
 				#print(price3)
+#				for i,jalan2 in enumerate(pjalan):
+#					if i==0:
+#						continue
+#					elif i > x:
+#						break
+#					pjalan[i][0] = str(pjalan[i][0]) + "円"
+#					pjalan[i][1] = str(pjalan[i][1]) + "円"
+#
+#				for i,jtb2 in enumerate(pjtb):
+#					if i == 0:
+#						continue
+#					elif i > x:
+#						break
+#				jtb_price[i] = str(jtb2).split("～")
+#
+#				for i,rakuten2 in enumerate(prakuten):
+#					if i==0:
+#						continue
+#					elif i > x:
+#						break
+#					prakuten[i][0] = str(prakuten[i][0]) + "円"
+#					prakuten[i][1] = str(prakuten[i][1]) + "円"
+
 				for i in range(x):
 					geo = geocode(hlocation[i + 1])
 					dom = xml.dom.minidom.parseString(geo)
@@ -468,57 +491,52 @@ def jalanscraping(hurl):
 def rscraping(url):
 	start = time.time()
 	hello = [10000000,0]
-	url = "https:" + url
-	r = requests.get('%s'%url)
-	soup = BeautifulSoup(r.content,"html.parser")
-	for b in soup.select('li[data-locate="roomType-chargeByPerson-1"]'):
-		rprice = b.find('strong')
-		#print(rprice.text)
-		try:
-			rakuten_price2 = rprice.text.replace(",","").split("~")
-			rakuten_price2[1] = rakuten_price2[1].replace("円/人","")
-			rakuten_price2 = list(map(int,rakuten_price2))
-			if hello[0] > rakuten_price2[0]:
-				hello[0] = rakuten_price2[0]
-			if hello[1] < rakuten_price2[1]:
-				hello[1] = rakuten_price2[1]	
-		except:
-			a = rprice.text.replace("円/人","").replace(",","")
-			rakuten_price2 = [a,a]
-			rakuten_price2 = list(map(int,rakuten_price2))
-			if hello[0] > rakuten_price2[0]:
-				hello[0] = rakuten_price2[0]
-			if hello[1] < rakuten_price2[1]:
-				hello[1] = rakuten_price2[1]
+	try:
+		url = "https:" + url
+		r = requests.get('%s'%url)
+		soup = BeautifulSoup(r.content,"html.parser")
+		for b in soup.select('li[data-locate="roomType-chargeByPerson-1"]'):
+			rprice = b.find('strong')
+			#print(rprice.text)
+			try:
+				rakuten_price2 = rprice.text.replace(",","").split("~")
+				rakuten_price2[1] = rakuten_price2[1].replace("円/人","")
+				rakuten_price2 = list(map(int,rakuten_price2))
+				if hello[0] > rakuten_price2[0]:
+					hello[0] = rakuten_price2[0]
+				if hello[1] < rakuten_price2[1]:
+					hello[1] = rakuten_price2[1]	
+			except:
+				a = rprice.text.replace("円/人","").replace(",","")
+				rakuten_price2 = [a,a]
+				rakuten_price2 = list(map(int,rakuten_price2))
+				if hello[0] > rakuten_price2[0]:
+					hello[0] = rakuten_price2[0]
+				if hello[1] < rakuten_price2[1]:
+					hello[1] = rakuten_price2[1]
+		if hello[0] == 10000000 and hello[1] == 0:
+			for b in soup.select('li[data-locate="roomType-chargeByPerson-2"]'):
+				rprice = b.find('strong')
+				try:
+					rakuten_price2 = rprice.text.replace(",","").split("~")
+					rakuten_price2[1] = rakuten_price2[1].replace("円/人","")
+					rakuten_price2 = list(map(int,rakuten_price2))
+					if hello[0] > rakuten_price2[0]:
+						hello[0] = int(rakuten_price2[0]/2)
+					if hello[1] < rakuten_price2[1]:
+						hello[1] = int(rakuten_price2[1]/2)
+				except:
+					a = rprice.text.replace("円/人","").replace(",","")
+					rakuten_price2 = [a,a]
+					rakuten_price2 = list(map(int,rakuten_price2))
+					if hello[0] > rakuten_price2[0]:
+						hello[0] = int(rakuten_price2[0]/2)
+					if hello[1] < rakuten_price2[1]:
+						hello[1] = int(rakuten_price2[1]/2)
+	except:
+		pass
 	end = time.time()
 	print("\n" +"rscraping "+ str(end-start) + "sec")
 	return hello
 
 
-def parallel2(purl,price2,x):
-	global jalan_price
-	global jtb_price
-	start = time.time()
-	pool = ThreadPoolExecutor(x)
-	pool2 = ThreadPoolExecutor(x)
-	h=[""]*7
-	y=[""]*7
-	for i in range(1,x+1):
-		h[i-1] = pool.submit(jalanscraping,purl[i])
-		y[i-1] = pool2.submit(jtbscraping,price2[i])
-	for i in range(x):
-		h[i] = h[i].result()
-		y[i] = y[i].result()
-		jalan_price[i+1] = h[i]
-		jtb_price[i+1] = y[i]
-#	with confu.ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
-#		futures = [executor.submit(jalanscraping, purl[i]) for i in range(1,x+1)]
-#		futures2 = [executor.submit(jtbscraping, price2[i]) for i in range(1,x+1)]
-#		(done, notdone) = confu.wait(futures)
-#		(done, notdone) = confu.wait(futures2)
-#		for i,future in enumerate(futures):
-#			jalan_price[i+1]=future.result()
-#		for i,future2 in enumerate(futures2):
-#			jtb_price[i+1]=future2.result()
-	end = time.time()
-	print("\n" +"parallel2"+ str(end-start) + "sec")
