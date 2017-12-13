@@ -145,7 +145,7 @@ def test(request):
 				image = result(html, 9)
 				hlocation = result(html, 3)
 				htype = result(html,5)
-				if x==3:
+				if x == 3:
 					purl = parallel(hurl,3,scraping)
 					price2 = parallel(hotel,3,js_jtb)
 					price3 = parallel(hotel,3,rakuten)
