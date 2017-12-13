@@ -152,11 +152,17 @@ def test(request):
 					JTB_url = price2
 					RAKUTEN_url = price3
 					JALAN_url = purl
-					jtb_price = parallel(price2,3,jtbscraping)
-					jalan_price = parallel(purl,3,jalanscraping)
-					#parallel2(purl,price2,3)
-					rakuten_price = parallel(price3,3,rscraping)
+					#jtb_price = parallel(price2,3,jtbscraping)
+					#jalan_price = parallel(purl,3,jalanscraping)
+					#rakuten_price = parallel(price3,3,rscraping)
+					pric = [price2,purl,price3]
+					kansuu = [jtbscraping,jalanscraping,rscraping]
+					process = parapara(kansuu,x,parallel,pric)
+					jtb_price = process[0]
+					jalan_price = process[1]
+					rakuten_price = process[2]
 				elif x>=5:
+					x = 5
 					purl = parallel(hurl,5,scraping)
 					price2 = parallel(hotel,5,js_jtb)
 					price3 = parallel(hotel,5,rakuten)
@@ -164,11 +170,15 @@ def test(request):
 					RAKUTEN_url = price3
 					JALAN_url = purl
 					print(JALAN_url)
-					parallel2(purl,price2,5)
+					pric = [price2,purl,price3]
+					kansuu = [jtbscraping,jalanscraping,rscraping]
+					process = parapara(kansuu,x,parallel,pric)
+					jtb_price = process[0]
+					jalan_price = process[1]
+					rakuten_price = process[2]
 					#jtb_price = parallel(price2,5,jtbscraping)
 					#jalan_price = parallel(purl,5,jalanscraping)
-					rakuten_price = parallel(price3,5,rscraping)
-					x=5 
+					#rakuten_price = parallel(price3,5,rscraping)
 				for i in range(x):
 					r = re.compile("([^,]*)(/)(.*)")
 					try:
@@ -345,6 +355,17 @@ def parallel(hotel,x,js):
 	end = time.time()
 	print("\n" +"parallel "+ str(end-start) + "sec")
 	return url	
+
+def parapara(kansuu,x,parallel,hotel):
+	c = [""]*10
+	d = [""]*10
+	pool = ThreadPoolExecutor(3)
+	for i,k in enumerate(kansuu):
+		c[i] = pool.submit(parallel,hotel[i],x,k)
+	for i in range(3):
+		d[i] = c[i].result()
+	print(d)
+	return d
 
 def js_jtb(hotel):
 	start = time.time()
