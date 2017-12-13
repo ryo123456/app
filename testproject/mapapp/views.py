@@ -53,28 +53,28 @@ def submain(request):
 	pjalan = jalan_price
 	pjtb = jtb_price
 	prakuten = rakuten_price
-	for i,jalan2 in enumerate(pjalan):
-		if i==0:
-			continue
-		elif i > x:
-			break
-		pjalan[i][0] = str(pjalan[i][0]) + "円"
-		pjalan[i][1] = str(pjalan[i][1]) + "円"
+#	for i,jalan2 in enumerate(pjalan):
+#		if i==0:
+#			continue
+#		elif i > x:
+#			break
+#		pjalan[i][0] = str(pjalan[i][0]) + "円"
+#		pjalan[i][1] = str(pjalan[i][1]) + "円"
 		
-	for i,jtb2 in enumerate(pjtb):
-		if i == 0:
-			continue
-		elif i > x:
-			break
-		jtb_price[i] = str(jtb2).split("～")
+#	for i,jtb2 in enumerate(pjtb):
+#		if i == 0:
+#			continue
+#		elif i > x:
+#			break
+#		jtb_price[i] = str(jtb2).split("～")
 	
-	for i,rakuten2 in enumerate(prakuten):
-                if i==0:
-                        continue
-                elif i > x:
-                        break
-                prakuten[i][0] = str(prakuten[i][0]) + "円"
-                prakuten[i][1] = str(prakuten[i][1]) + "円"	
+#	for i,rakuten2 in enumerate(prakuten):
+#                if i==0:
+#                       continue
+#                elif i > x:
+#                        break
+#		prakuten[i][0] = str(prakuten[i][0]) + "円"
+#               prakuten[i][1] = str(prakuten[i][1]) + "円"	
 
 	print(pjalan)
 	print(pjtb)
@@ -190,28 +190,28 @@ def test(request):
 				gcount = x
 				#print(price2)
 				#print(price3)
-#				for i,jalan2 in enumerate(pjalan):
-#					if i==0:
-#						continue
-#					elif i > x:
-#						break
-#					pjalan[i][0] = str(pjalan[i][0]) + "円"
-#					pjalan[i][1] = str(pjalan[i][1]) + "円"
-#
-#				for i,jtb2 in enumerate(pjtb):
-#					if i == 0:
-#						continue
-#					elif i > x:
-#						break
-#				jtb_price[i] = str(jtb2).split("～")
-#
-#				for i,rakuten2 in enumerate(prakuten):
-#					if i==0:
-#						continue
-#					elif i > x:
-#						break
-#					prakuten[i][0] = str(prakuten[i][0]) + "円"
-#					prakuten[i][1] = str(prakuten[i][1]) + "円"
+				for i,jalan2 in enumerate(jalan_price):
+					if i==0:
+						continue
+					elif i > x:
+						break
+					jalan_price[i][0] = str(jalan_price[i][0]) + "円"
+					jalan_price[i][1] = str(jalan_price[i][1]) + "円"
+
+				for i,jtb2 in enumerate(jtb_price):
+					if i == 0:
+						continue
+					elif i > x:
+						break
+					jtb_price[i] = str(jtb2).split("～")
+
+				for i,rakuten2 in enumerate(rakuten_price):
+					if i==0:
+						continue
+					elif i > x:
+						break
+					rakuten_price[i][0] = str(rakuten_price[i][0]) + "円"
+					rakuten_price[i][1] = str(rakuten_price[i][1]) + "円"
 
 				for i in range(x):
 					geo = geocode(hlocation[i + 1])

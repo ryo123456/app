@@ -22,7 +22,7 @@
   <body link="blue" alink="navy" vlink="gray">
   <header id="header" >
   </header>
-              <table border="1" width="800" height="200" class="table table-striped">
+              <table align="center">
                 <tr><th>ホテル名</th><th>じゃらん</th><th>JTB</th><th>楽天</th></tr>
                 <tr><td>{{a1.0}}</td><td id ="20">a</td><td id ="30">a</td><td id ="40">a</td></tr>
                 <tr><td>{{a1.1}}</td><td id ="21">a</td><td id ="31">a</td><td id ="41">a</td></tr>
@@ -44,7 +44,7 @@
 			c = new String(b);
 			a = document.getElementById(w);
         		if (b!=="1"){
-        			a.innerHTML ="最高値"+"   "+"最安値<br>"+d+" "+e+"<br><a href="+b+">料金一覧<"+"/a>";
+        			a.innerHTML ="最高値&nbsp;&ensp;最安値<br>"+d+" "+e+"<br><a href="+b+">料金一覧<"+"/a>";
         		}
         		else {
         			a.innerHTML = "検索対象なし";
@@ -52,7 +52,71 @@
 		}
 	}
  </script>
-
+ <style>
+table {
+  width: 1000;
+  border-spacing: 0;
+  font-size:20px;
+}
+table th {
+  color: #fff;
+  padding: 8px 15px;
+  background: #258;
+  background:-moz-linear-gradient(rgba(34,85,136,0.7), rgba(34,85,136,0.9) 50%);
+  background:-webkit-gradient(linear, 100% 0%, 100% 50%, from(rgba(34,85,136,0.7)), to(rgba(34,85,136,0.9)));
+  font-weight: bold;
+  border-left:1px solid #258;
+  border-top:1px solid #258;
+  border-bottom:1px solid #258;
+  line-height: 120%;
+  text-align: center;
+  text-shadow:0 -1px 0 rgba(34,85,136,0.9);
+  box-shadow: 0px 1px 1px rgba(255,255,255,0.3) inset;
+}
+table th:first-child {
+  border-radius: 5px 0 0 0;	
+}
+table th:last-child {
+  border-radius:0 5px 0 0;
+  border-right:1px solid #258;
+  box-shadow: 2px 2px 1px rgba(0,0,0,0.1),0px 1px 1px rgba(255,255,255,0.3) inset;
+}
+table tr td {
+  padding: 8px 15px;
+  border-bottom: 1px solid #84b2e0;
+  border-left: 1px solid #84b2e0;
+  text-align: center;
+}
+table tr td:last-child {
+  border-right: 1px solid #84b2e0;
+  box-shadow: 2px 2px 1px rgba(0,0,0,0.1);
+}
+table tr {
+  background: #fff;
+}
+table tr:nth-child(2n+1) {
+  background: #f1f6fc;
+}
+table tr:last-child td {
+  box-shadow: 2px 2px 1px rgba(0,0,0,0.1);
+}
+table tr:last-child td:first-child {
+  border-radius: 0 0 0 5px;
+}
+table tr:last-child td:last-child {
+  border-radius: 0 0 5px 0;
+}
+table tr:hover {
+  background: #bbd4ee;
+  cursor:pointer;
+}
+ body {
+        height: 100%;
+        width: 100%;
+               margin: 0;
+         background-image: url("{% static 'haikei4.jpg' %}");
+      }
+ </style>
   </div>
   <footer id="footer">
   </footer>
