@@ -448,13 +448,15 @@ def rakuten(hotel):
 	print("\n" +"rakuten "+ str(end-start) + "sec")
 	return url
 
-def jtbscraping(hurl):
+def jtbscraping(url):
 	start = time.time()
 	jtb_price = 0
 	start = time.time()
-	if hurl !=1:
+	if url.find("html") == -1:
+		url = url + "meal.html"
+	if url !=1:
 		driver = webdriver.PhantomJS()
-		driver.get(hurl)
+		driver.get(url)
 		soup = BeautifulSoup(driver.page_source,"lxml")
 		for div in soup.select('div#one-price-area > dl > dd > span'):
 			jtb_price = div.text
