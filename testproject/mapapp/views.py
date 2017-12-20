@@ -44,64 +44,6 @@ def form_test(request):
     })
 
 @csrf_protect
-def submain(request):
-	hotel = ghotel
-	x = gcount  
-	jtb = JTB_url
-	rakuten = RAKUTEN_url
-	jalan = JALAN_url
-	pjalan = jalan_price
-	pjtb = jtb_price
-	prakuten = rakuten_price
-#	for i,jalan2 in enumerate(pjalan):
-#		if i==0:
-#			continue
-#		elif i > x:
-#			break
-#		pjalan[i][0] = str(pjalan[i][0]) + "円"
-#		pjalan[i][1] = str(pjalan[i][1]) + "円"
-		
-#	for i,jtb2 in enumerate(pjtb):
-#		if i == 0:
-#			continue
-#		elif i > x:
-#			break
-#		jtb_price[i] = str(jtb2).split("～")
-	
-#	for i,rakuten2 in enumerate(prakuten):
-#                if i==0:
-#                       continue
-#                elif i > x:
-#                        break
-#		prakuten[i][0] = str(prakuten[i][0]) + "円"
-#               prakuten[i][1] = str(prakuten[i][1]) + "円"	
-
-	print(pjalan)
-	print(pjtb)
-	print(prakuten)
-	if x == 3:
-		return render(request, 'mapapp/index5.html', {
-			'a1': [hotel[1],hotel[2],hotel[3]],
-			'a2': [jalan[1],jalan[2],jalan[3]],
-			'a3': [jtb[1],jtb[2],jtb[3]],
-			'a4': [rakuten[1],rakuten[2],rakuten[3]],
-			'a5': [pjalan[1][0],pjalan[1][1],pjalan[2][0],pjalan[2][1],pjalan[3][0],pjalan[3][1]],
-			'a6': [pjtb[1][0],pjtb[1][1],pjtb[2][0],pjtb[2][1],pjtb[3][0],pjtb[3][1]],	
-			'a7': [prakuten[1][0],prakuten[1][1],prakuten[2][0],prakuten[2][1],prakuten[3][0],prakuten[3][1]]
-				
-		})
-	else:
-		return render(request, 'mapapp/index4.html', {
-			'a1': [hotel[1],hotel[2],hotel[3],hotel[4],hotel[5]],
-			'a2': [jalan[1],jalan[2],jalan[3],jalan[4],jalan[5]],
-			'a3': [jtb[1],jtb[2],jtb[3],jtb[4],jtb[5]],
-			'a4': [rakuten[1],rakuten[2],rakuten[3],rakuten[4],rakuten[5]],
-			'a5': [pjalan[1][0],pjalan[1][1],pjalan[2][0],pjalan[2][1],pjalan[3][0],pjalan[3][1],pjalan[4][0],pjalan[4][1],pjalan[5][0],pjalan[5][1]],
-			'a6': [pjtb[1][0],pjtb[1][1],pjtb[2][0],pjtb[2][1],pjtb[3][0],pjtb[3][1],pjtb[4][0],pjtb[4][1],pjtb[5][0],pjtb[5][1]],	
-			'a7': [prakuten[1][0],prakuten[1][1],prakuten[2][0],prakuten[2][1],prakuten[3][0],prakuten[3][1],prakuten[4][0],prakuten[4][1],prakuten[5][0],prakuten[5][1]]
-		})
-
-@csrf_protect
 def test(request):
 	start = time.time()
 	index = "index.html"
@@ -116,14 +58,6 @@ def test(request):
 	purl = [" "]*10
 	lat2 = [1] * 10
 	lng2 = [1] * 10
-	global ghotel
-	global gcount
-	global JTB_url
-	global RAKUTEN_url
-	global JALAN_url
-	global jalan_price
-	global jtb_price
-	global rakuten_price	
 
 	if request.method == "POST":
 		form = MyForm(data=request.POST)
@@ -141,44 +75,29 @@ def test(request):
 				ghotel = hotel
 				x = count(html, 1)
 				hurl = result(html, 6)
-				price = hprice(html)
 				image = result(html, 9)
 				hlocation = result(html, 3)
-				htype = result(html,5)
-				if x == 3:
-					purl = parallel(hurl,3,scraping)
-					price2 = parallel(hotel,3,js_jtb)
-					price3 = parallel(hotel,3,rakuten)
-					JTB_url = price2
-					RAKUTEN_url = price3
-					JALAN_url = purl
-					#jtb_price = parallel(price2,3,jtbscraping)
-					#jalan_price = parallel(purl,3,jalanscraping)
-					#rakuten_price = parallel(price3,3,rscraping)
-					pric = [price2,purl,price3]
-					kansuu = [jtbscraping,jalanscraping,rscraping]
-					process = parapara(kansuu,x,parallel,pric)
-					jtb_price = process[0]
-					jalan_price = process[1]
-					rakuten_price = process[2]
-				elif x>=5:
+				if x>=5:
 					x = 5
-					purl = parallel(hurl,5,scraping)
-					price2 = parallel(hotel,5,js_jtb)
-					price3 = parallel(hotel,5,rakuten)
-					JTB_url = price2
-					RAKUTEN_url = price3
-					JALAN_url = purl
-					print(JALAN_url)
-					pric = [price2,purl,price3]
-					kansuu = [jtbscraping,jalanscraping,rscraping]
-					process = parapara(kansuu,x,parallel,pric)
-					jtb_price = process[0]
-					jalan_price = process[1]
-					rakuten_price = process[2]
-					#jtb_price = parallel(price2,5,jtbscraping)
-					#jalan_price = parallel(purl,5,jalanscraping)
-					#rakuten_price = parallel(price3,5,rscraping)
+				#purl = parallel(hurl,x,scraping)
+				#price2 = parallel(hotel,x,js_jtb)
+				#price3 = parallel(hotel,x,rakuten)
+				pric = [hurl,hotel,hotel]
+				kansuu = [scraping,js_jtb,rakuten]
+				process = parapara(kansuu,x,parallel,pric)
+				purl,price2,price3 = process[0],process[1],process[2]
+				JTB_url = price2
+				RAKUTEN_url = price3
+				JALAN_url = purl
+				#jtb_price = parallel(price2,x,jtbscraping)
+				#jalan_price = parallel(purl,x,jalanscraping)
+				#rakuten_price = parallel(price3,x,rscraping)
+				pric = [price2,purl,price3]
+				kansuu = [jtbscraping,jalanscraping,rscraping]
+				process = parapara(kansuu,x,parallel,pric)
+				jtb_price = process[0]
+				jalan_price = process[1]
+				rakuten_price = process[2]
 				for i in range(x):
 					r = re.compile("([^,]*)(/)(.*)")
 					try:
@@ -188,13 +107,13 @@ def test(request):
 					except AttributeError:
 						pass
 				gcount = x
-				#print(price2)
-				#print(price3)
 				for i,jalan2 in enumerate(jalan_price):
 					if i==0:
 						continue
 					elif i > x:
 						break
+					jalan_price[i][0] = "{:,d}".format(jalan_price[i][0])
+					jalan_price[i][1] = "{:,d}".format(jalan_price[i][1])
 					jalan_price[i][0] = str(jalan_price[i][0]) + "円"
 					jalan_price[i][1] = str(jalan_price[i][1]) + "円"
 
@@ -210,6 +129,8 @@ def test(request):
 						continue
 					elif i > x:
 						break
+					rakuten_price[i][0] = "{:,d}".format(rakuten_price[i][0])
+					rakuten_price[i][1] = "{:,d}".format(rakuten_price[i][1])
 					rakuten_price[i][0] = str(rakuten_price[i][0]) + "円"
 					rakuten_price[i][1] = str(rakuten_price[i][1]) + "円"
 
@@ -236,14 +157,10 @@ def test(request):
 			'lat': lat,
 			'lng': lng,
 			'a1': [hotel[1],hotel[2],hotel[3]],
-			'a2': [hurl[1],hurl[2],hurl[3]],
 			'b1': [image[1],image[2],image[3]],
 			'c1': [lat2[0], lat2[1], lat2[2]],
 			'c2': [lng2[0], lng2[1], lng2[2]],
-			'd1': [price[1],price[2],price[3]],
-			'e1': [hlocation[1],hlocation[2],hlocation[3]],
-			'f1': [htype[1],htype[2],htype[3]],
-			'purl': [purl[1],purl[2],purl[3]]
+			'e1': [hlocation[1],hlocation[2],hlocation[3]]
 
 		})
 	else:
@@ -253,15 +170,18 @@ def test(request):
 			'lat': lat,
 			'lng': lng,
 			'a1': [hotel[1],hotel[2],hotel[3],hotel[4],hotel[5]],
-			'a2': [hurl[1],hurl[2],hurl[3],hurl[4],hurl[5]],
 			'b1': [image[1],image[2],image[3],image[4],image[5]],
 			'c1': [lat2[0], lat2[1], lat2[2], lat2[3], lat2[4]],
 			'c2': [lng2[0], lng2[1], lng2[2], lng2[3], lng2[4]],
-			'd1': [price[1],price[2],price[3],price[4],price[5]],
-			'e1': [hlocation[1],hlocation[2],hlocation[3],hlocation[4],hlocation[5]],
-                        'f1': [htype[1],htype[2],htype[3],htype[4],htype[5]],
-			'purl': [purl[1],purl[2],purl[3],purl[4],purl[5]]
-		
+			'd1': [hlocation[1],hlocation[2],hlocation[3],hlocation[4],hlocation[5]],
+			'e1': [JALAN_url[1],JALAN_url[2],JALAN_url[3],JALAN_url[4],JALAN_url[5]],
+			'e2': [jalan_price[1][0],jalan_price[1][1],jalan_price[2][0],jalan_price[2][1],jalan_price[3][0],jalan_price[3][1],jalan_price[4][0],jalan_price[4][1],jalan_price[5][0],jalan_price[5][1]],
+			'f1': [JTB_url[1],JTB_url[2],JTB_url[3],JTB_url[4],JTB_url[5]],
+			'f2': [jtb_price[1][0],jtb_price[1][1],jtb_price[2][0],jtb_price[2][1],jtb_price[3][0],jtb_price[3][1],jtb_price[4][0],jtb_price[4][1],jtb_price[5][0],jtb_price[5][1]],
+			'g1': [RAKUTEN_url[1],RAKUTEN_url[2],RAKUTEN_url[3],RAKUTEN_url[4],RAKUTEN_url[5]],
+			'g2': [rakuten_price[1][0],rakuten_price[1][1],rakuten_price[2][0],rakuten_price[2][1],rakuten_price[3][0],rakuten_price[3][1],rakuten_price[4][0],rakuten_price[4][1],rakuten_price[5][0],rakuten_price[5][1]]
+			
+					
 
 		})
 
