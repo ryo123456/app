@@ -19,8 +19,9 @@
       }
       form{
         position: relative;
-        top:50%;
+        top: 50%;
       }
+
     </style>
   </head>
   <body link="blue" alink="navy" vlink="gray">
@@ -33,18 +34,39 @@
   </header>
   <div class="container ">
       <div class="row">
-
           <div class="col-md-12">
               <table border="1" width="800" height="200" class="table table-striped">
-              	<tr><th>ホテル名</th><th>住所</th><th>種別</th><th>料金</th><th>写真</th><th>ホテルURL</th></tr>
-          	    <tr><td>{{a1.0}}</td><td>{{e1.0}}</td><td>{{f1.0}}</td><td>{{d1.0}}<a href="{{purl.0}}"target="_blank"><br>詳細</a></td><td><img src="{{b1.0}}" width="90" height="90"></td><td><p><a href="{{a2.0}}"target="_blank">{{a1.0}}の情報はこちら</a></p></td></tr>
-              	<tr><td>{{a1.1}}</td><td>{{e1.1}}</td><td>{{f1.1}}</td><td>{{d1.1}}<a href="{{purl.1}}"target="_blank"><br>詳細</a></td><td><img src="{{b1.1}}" width="90" height="90"></td><td><p><a href="{{a2.1}}"target="_blank">{{a1.1}}の情報はこちら</a></p></td></tr>
-              	<tr><td>{{a1.2}}</td><td>{{e1.2}}</td><td>{{f1.2}}</td><td>{{d1.2}}<a href="{{purl.2}}"target="_blank"><br>詳細</a></td><td><img src="{{b1.2}}" width="90" height="90"></td><td><p><a href="{{a2.2}}"target="_blank">{{a1.2}}の情報はこちら</a></p></td></tr>
+              	<tr><th>ホテル名</th><th>住所</th><th>じゃらん</th><th>JTB</th><th>楽天</th></tr>
+          	    <tr><td>{{a1.0}}<br><img src="{{b1.0}}" width="90" height="90"></td><td>{{d1.0}}</td><td id ="20">a</td><td id ="30">a</td><td id = "40">a</td>
+          	    <tr><td>{{a1.1}}<br><img src="{{b1.1}}" width="90" height="90"></td><td>{{d1.1}}</td><td id ="21">a</td><td id ="31">a</td><td id = "41">a</td>
               </table>
-          </div>
+   <script>
+        var a;
+        var b;
+        var c;
+	var d;
+	var e;
+	for (var x =2; x<5; x++){
+		for (var y =0; y<3; y++){
+			w = x.toString(10)+y.toString(10);
+			z = "a"+x+"."+y;
+			(x==2 &&y==0)?b="{{e1.0}}":(x==2 &&y==1)?b="{{e1.1}}":(x==3 &&y==0)?b="{{f1.0}}":(x==3 &&y==1)?b="{{f1.1}}":(x==4 &&y==0)?b="{{g1.0}}":b="{{g1.1}}";
+			(x==2 &&y==0)?e="{{e2.1}}":(x==2 &&y==1)?e="{{e2.3}}":(x==3 &&y==0)?e="{{f2.0}}":(x==3 &&y==1)?e="{{f2.2}}":(x==4 &&y==0)?e="{{g2.0}}":e="{{g2.2}}";
+			c = new String(b);
+			a = document.getElementById(w);
+			d = "target=\"_blank\""
+        		if (b!=="1"){
+        			a.innerHTML ="最安値<br>"+e+"<br><a href="+b+" "+d+">料金一覧<"+"/a>";
+        		}
+        		else {
+        			a.innerHTML = "検索対象なし";
+        		}
+		}
+	}
+   </script>  
+	</div>
 
           <div class="col-md-12">
-		<a href="http://127.0.0.1:8080/mapapp/comparison/"target="_blank">料金比較はこちら</a>
                 <div id="map"></div>
                 <script>
                   var map;
@@ -68,6 +90,16 @@
                 	 position: m_latlng3,
                  	 map: map
               });
+            	 var m_latlng4 = new google.maps.LatLng({{c1.3}},{{c2.3}});
+            	 var marker4 = new google.maps.Marker({
+                	 position: m_latlng4,
+                 	 map: map
+              });
+            	 var m_latlng5 = new google.maps.LatLng({{c1.4}},{{c2.4}});
+            	 var marker5 = new google.maps.Marker({
+                	 position: m_latlng5,
+                 	 map: map
+              });
             	}
                 </script>
                 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDfTqBDOAgYhUiE28RjaduSce7cLyzXIRQ&callback=initMap"
@@ -79,3 +111,4 @@
   </footer>
   </body>
 </html>
+
