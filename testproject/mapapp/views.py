@@ -80,9 +80,6 @@ def test(request):
 				hlocation = result(html, 3)
 				if x>=5:
 					x = 5
-				#purl = parallel(hurl,x,scraping)
-				#price2 = parallel(hotel,x,js_jtb)
-				#price3 = parallel(hotel,x,rakuten)
 				pric = [hurl,hotel,hotel]
 				kansuu = [scraping,js_jtb,rakuten]
 				process = parapara(kansuu,x,parallel,pric)
@@ -90,50 +87,13 @@ def test(request):
 				JTB_url = price2
 				RAKUTEN_url = price3
 				JALAN_url = purl
-				#jtb_price = parallel(price2,x,jtbscraping)
-				#jalan_price = parallel(purl,x,jalanscraping)
-				#rakuten_price = parallel(price3,x,rscraping)
 				pric = [price2,hotel,hotel]
 				kansuu = [jtbscraping,jalanscraping,rscraping]
 				process = parapara(kansuu,x,parallel,pric)
 				jtb_price = process[0]
 				jalan_price = process[1]
 				rakuten_price = process[2]
-				for i in range(x):
-					r = re.compile("([^,]*)(/)(.*)")
-					try:
-						m = r.match("%s"%price2[i])
-						ss=m.group(1)+m.group(2)
-						price2[i]=ss
-					except AttributeError:
-						pass
-				gcount = x
-#				for i,jalan2 in enumerate(jalan_price):
-#					if i==0:
-#						continue
-#					elif i > x:
-#						break
-#					jalan_price[i][0] = "{:,d}".format(jalan_price[i][0])
-#					jalan_price[i][1] = "{:,d}".format(jalan_price[i][1])
-#					jalan_price[i][0] = str(jalan_price[i][0]) + "円"
-#					jalan_price[i][1] = str(jalan_price[i][1]) + "円"
 
-				for i,jtb2 in enumerate(jtb_price):
-					if i == 0:
-						continue
-					elif i > x:
-						break
-					jtb_price[i] = str(jtb2).split("～")
-
-#				for i,rakuten2 in enumerate(rakuten_price):
-#					if i==0:
-#						continue
-#					elif i > x:
-#						break
-#					rakuten_price[i][0] = "{:,d}".format(rakuten_price[i][0])
-#					rakuten_price[i][1] = "{:,d}".format(rakuten_price[i][1])
-#					rakuten_price[i][0] = str(rakuten_price[i][0]) + "円"
-#					rakuten_price[i][1] = str(rakuten_price[i][1]) + "円"
 
 				for i in range(x):
 					geo = geocode(hlocation[i + 1])
@@ -142,7 +102,6 @@ def test(request):
 					if location.length > 0:
 						lat2[i] = location[0].getElementsByTagName('lat')[0].firstChild.data
 						lng2[i] = location[0].getElementsByTagName('lng')[0].firstChild.data
-				print(jalan_price)
 				print(jtb_price)
 				if x == 2:
 					index = "index3.html"
@@ -167,7 +126,7 @@ def test(request):
 			'e1': [JALAN_url[1],JALAN_url[2]],
 			'e2': [jalan_price[1],jalan_price[1],jalan_price[2],jalan_price[2]],
 			'f1': [JTB_url[1],JTB_url[2]],
-			'f2': [jtb_price[1][0],jtb_price[1][1],jtb_price[2][0],jtb_price[2][1]],
+			'f2': [jtb_price[1][0],jtb_price[1][0],jtb_price[2][0],jtb_price[2][0]],
 			'g1': [RAKUTEN_url[1],RAKUTEN_url[2]],
 			'g2': [rakuten_price[1][0],rakuten_price[1][1],rakuten_price[2][0],rakuten_price[2][1]]
 
@@ -284,9 +243,6 @@ def scraping(hurl):
 	for link in soup.find_all("link", rel="canonical"):
 		purl=link['href']
 	url = purl + "plan/"
-	#r = requests.get(url)
-	#content_type_encoding = r.encoding if r.encoding != 'ISO-8859-1' else None
-	#soup = BeautifulSoup(r.content, 'html.parser', from_encoding=content_type_encoding)
 	end = time.time()
 	print("\n" +"scraping2 "+ str(end-start) + "sec")
 	return url
@@ -316,17 +272,23 @@ def parapara(kansuu,x,parallel,hotel):
 		c[i] = pool.submit(parallel,hotel[i],x,k)
 	for i in range(3):
 		d[i] = c[i].result()
-#	print(d)
 	return d
 
 def js_jtb(hotel):
 	start = time.time()
 	driver = webdriver.PhantomJS()
+	hotel = hotel.replace('　','')
+	hotel2 = hotel.split("（")
+	hotel = hotel2[0]
 	driver.get('http://www.jtb.co.jp/search/?q=' + urllib.parse.quote_plus(hotel, encoding='utf-8'))
 	soup = BeautifulSoup(driver.page_source,"lxml")
 	a = soup.find("a", class_="gs-title")
 	try:
 		href = a['href']
+		if href.find("dom") != -1:
+			wq = soup.find_all("a", class_="gs-title")
+			wq = wq[2]
+			href = wq['href']
 	except KeyError:
 		pass
 	except TypeError:
@@ -386,7 +348,7 @@ def jtbscraping(jtbinfo):
 	name = name[0].text
 	regex=r'（.*）'
 	name = re.sub(regex,"",name)
-	jtb_price = 0
+	jtb_price = [0,0]
 	jtbinfo = list(jtbinfo)
 	jtbinfo.pop()
 	for a in range(len(jtbinfo)):
@@ -402,19 +364,32 @@ def jtbscraping(jtbinfo):
 			print(a.text)
 			price = soup.select("#shisetsu_list > div > div.htl_listInner > div.htl_body > div > dl.htl_price1 > dd > span")
 			jtb_price = price[cnt].text
+			jtb_price = jtb_price.replace('\n','')
+			jtb_price = list(jtb_price)
+			jtb_price[jtb_price.index("円")+1] = ":"
+			jtb_price = ''.join(jtb_price)
+			jtb_price = jtb_price.split(":")
 		cnt+=1
 	end = time.time()
+	print(jtb_price)
 	print("\n" +"jtbscraping"+ str(end-start) + "sec")
 	return jtb_price
 
 def jalanscraping(hurl):
 	start = time.time()
+	print(hurl)
+	hurl = hurl.replace('　','')
+	hurl = hurl.replace('－','')
 	url = "https://www.jalan.net/uw/uwp2011/uww2011init.do?keyword=" +  urllib.parse.quote_plus(hurl,encoding='shift_jis')
 	jaran_price = [0,1000000000000]
 	r = requests.get('%s'%url)
 	soup = BeautifulSoup(r.content,"html.parser")
 	div = soup.select('div#fw > div.result > div.detail.clearfix > div.detail-r > div.price.clearfix > span.bold')
 	jaran_price = div[0].text
+	jaran_price = jaran_price.replace('￥','')
+	jaran_price = jaran_price.replace('/人','')
+	jaran_price = jaran_price[:-1]
+	jaran_price = jaran_price + "円"
 	end = time.time()
 	print(jaran_price)
 	print("\n" +"jaranscraping"+ str(end-start) + "sec")
@@ -430,6 +405,8 @@ def rscraping(url):
 		soup = BeautifulSoup(r.content,"html.parser")
 		b = soup.select('div#result > div.hotelBox > dl.price > dd > em')
 		hello[0] = b[0].text
+		price = hello[0].split("円")
+		hello[0] = price[0] + "円"
 	except:
 		pass
 	end = time.time()
